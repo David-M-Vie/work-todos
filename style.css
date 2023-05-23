@@ -1,0 +1,181 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:Verdana, Geneva, Tahoma, sans-serif
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #595D88;
+
+}
+
+.top-bar {
+  display: flex;
+  justify-content:space-between;
+  background: #fff;
+  width: 500px;
+  border-radius: 6px 6px 0 0;
+  padding: 20px 25px 0px 25px;
+}
+
+ul.sortable-list {
+  background: #fff;
+  width: 500px;
+  border-radius: 0px 0px 6px 6px;
+  padding: 30px 25px 20px
+}
+
+/* .sortable-list .item {
+  list-style: none;
+  display: flex;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 11px;
+  padding: 10px 13px;
+  align-items: center;
+  justify-content: space-between;
+} */
+
+ul.sortable-list .item {
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 11px;
+  padding: 15px 13px;
+  list-style: none;
+}
+
+h4 {
+  font-weight: normal;
+}
+
+.top-row {
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+h4.top-row span {
+  font-size:.9rem;
+  color: rgb(104, 104, 104)
+}
+
+h4 input {
+  margin-left: auto;
+  margin-right:15px;
+}
+
+div.bottom-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+p.text {
+  font-size: .8rem;
+  color: rgb(84, 84, 84);
+
+}
+
+
+/* buttons */
+.btn1 {
+  padding: 5px 10px;
+  background: rgb(83, 202, 83);
+  color: white;
+  border: none;
+}
+
+.btn2 {
+  padding: 5px 10px;
+  background:rgb(231, 143, 143);;
+  color: white;
+  border: none;
+}
+
+.btn1:hover,
+.btn2:hover {
+  cursor: pointer;
+}
+
+.btn1:active,
+.btn2:active {
+  box-shadow: 0px 0px 6px inset rgba(0,0,0, .65)
+}
+
+
+
+.item.dragging :where(.bottom-row, h4) {
+  opacity: 0;
+}
+
+
+
+
+/* MODAL */
+
+.modal-overlay {
+  background: rgba(0,0,0, .7);
+  position:absolute; 
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal {
+  background: white;
+  border-radius: 6px;
+  width: 500px;
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%); 
+  z-index:2;
+  padding: 30px;
+}
+
+.modal .inputs {
+  margin-bottom: 11px;
+  padding: 15px 0px;
+}
+
+.modal input {
+  height: 50px;
+  padding: 0px 10px;
+  text-indent: 10px;
+  font-size: .9rem;
+}
+
+.modal textarea {
+  width: 80%;
+  color: rgb(87, 86, 86);
+  padding: 10px;
+  min-height: 100px;
+}
+
+input[type="checkbox"] {
+  height: 17px;
+  width: 17px;
+  position: relative;
+  top: 5px;
+}
+
+input[type="checkbox"]:hover {
+  cursor: pointer; 
+}
+
+.modal .btn-wrapper button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px 0;
+  background: rgb(58, 182, 58);
+}
+
+li.completed {
+  opacity: .35;
+  text-decoration: line-through
+}
