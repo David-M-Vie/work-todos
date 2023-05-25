@@ -10,13 +10,13 @@ const refreshApp = () => {
     for(i = 0; i < todos.length; i++) {
   html += `<li class="item" draggable="true">            
               <h4 class="top-row">
-                <span>Id: ${todos[i].id} </span> 
+                <span contentEditable="true" onblur="editMode(${todos[i].uid}, 'id', this)">Id: ${todos[i].id} </span> 
                 <input type="checkbox"/> 
                 <button class="btn2" onclick="deleteTodo(${todos[i].uid})">Delete</button>
               </h4>
               <div class="bottom-row">
                 <div class="col-1">
-                  <p class="text">${todos[i].description}</p>          
+                  <p contentEditable="true" onblur="editMode(${todos[i].uid},'desc', this)" class="text">${todos[i].description}</p>          
                 </div>
                 <div class="col-2">
                   <p class="text"> Due: ${todos[i].dueDate} </p>
@@ -32,8 +32,6 @@ const refreshApp = () => {
   const ul = document.querySelector(".sortable-list");
   ul.innerHTML = html;
 
-
-
   const sortableList = document.querySelector(".sortable-list");
   const items = sortableList.querySelectorAll(".item");
   items.forEach(item => {
@@ -47,6 +45,7 @@ const refreshApp = () => {
       setNewOrder(); // WORK IN PROGRESS!!!!
     });
     item.querySelector('input').addEventListener("change", (e) => {toggleCompleted(e)})
+    item.queryselector
   })
 
   const initSortableList = (e) => {
@@ -57,14 +56,10 @@ const refreshApp = () => {
     let nextSibling = siblings.find(sibling => {
       return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2
     })
-
     sortableList.insertBefore(draggingItem, nextSibling);
   }
-
   sortableList.addEventListener("dragover", initSortableList);
-  sortableList.addEventListener("dragenter", e => e.preventDefault());
-
-  
+  sortableList.addEventListener("dragenter", e => e.preventDefault());  
 }
 
 refreshApp();
@@ -173,7 +168,31 @@ const deleteTodo = (uid) => {
 /*==============
     Edit a todo 
 ================*/
+const editMode = (uid, mode, element) => {
 
+  if(mode === 'id') {
+    let text = element.textContent.split(": ");
+    todos.map((todo) => {
+      if(todo.uid === uid) {
+        return todo.id = text[1]
+      }
+      return
+    })
+    console.log('todos', todos)
+
+  }else if( mode === 'desc'){
+    // edit the description
+    console.log('desc mode yeah', uid, 'elementContent', element.textContent)
+    todos.map((todo) => {
+      if(todo.uid === uid) {
+        return todo.description = element.textContent;
+      }
+      return
+    })
+  }
+  localStorage.setItem('todos', JSON.stringify(todos));
+  refreshApp();
+}
 
 /*===============================
   When order of todos is changed 
