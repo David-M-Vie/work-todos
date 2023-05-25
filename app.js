@@ -76,9 +76,11 @@ const modalOverlay = (status) => {
     const createOverlay = document.createElement('div');
     createOverlay.className = "modal-overlay";
     document.body.appendChild(createOverlay)
+    document.body.style.overflow = "hidden"
   }else { 
     // must be removing the overlay
     document.querySelector(".modal-overlay").remove();
+    document.body.style.overflow = "scroll"
   }
 }
 
