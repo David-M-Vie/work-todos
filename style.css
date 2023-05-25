@@ -180,3 +180,7 @@ li.completed {
   opacity: .35;
   text-decoration: line-through
 }
+
+li *[contenteditable = "true"] {
+  outline: none;
+}
