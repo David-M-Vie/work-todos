@@ -4,14 +4,14 @@ let todos = JSON.parse(localStorage.getItem("todos")) || [];
 
 // Runs this on start up and any time crud changes on todos
 const refreshApp = () => {
-  console.log('refresh')
+  // console.log('refresh')
   let html = '';
   if(todos.length > 0){
     for(i = 0; i < todos.length; i++) {
-  html += `<li class="item" draggable="true">            
+  html += `<li class="item ${todos[i].completed ? "completed" : ""}" draggable="true" data-uid="${todos[i].uid}">            
               <h4 class="top-row">
                 <span contentEditable="true" onblur="editMode(${todos[i].uid}, 'id', this)">Id: ${todos[i].id} </span> 
-                <input type="checkbox"/> 
+                <input type="checkbox" ${todos[i].completed ? "checked" : ""}/> 
                 <button class="btn2" onclick="deleteTodo(${todos[i].uid})">Delete</button>
               </h4>
               <div class="bottom-row">
@@ -42,10 +42,9 @@ const refreshApp = () => {
     item.addEventListener("dragend", () => {
       item.classList.remove("dragging");
       // when drag ends, need to update the todos list with new order.
-      setNewOrder(); // WORK IN PROGRESS!!!!
+      setNewOrder(item.dataset.uid); // WORK IN PROGRESS!!!!
     });
     item.querySelector('input').addEventListener("change", (e) => {toggleCompleted(e)})
-    item.queryselector
   })
 
   const initSortableList = (e) => {
@@ -139,7 +138,7 @@ const addTodo = () => {
   const description = document.querySelector('#description').value;
   const uid = Math.floor(Math.random() * Date.now());
 
-  const todo = {uid, id, description, dueDate: "tbc"}
+  const todo = {uid, id, description, dueDate: "tbc", completed: false}
   todos.push(todo);
   localStorage.setItem("todos", JSON.stringify(todos))
   refreshApp();
@@ -150,16 +149,28 @@ const addTodo = () => {
    Mark a todo as complete
 ===========================*/
 const toggleCompleted = (e) => {
-  e.target.checked ? e.target.closest("li").classList.add("completed") : e.target.closest("li").classList.remove("completed")
+  const li = e.target.closest("li");
+  const uid = Number(li.dataset.uid);
+   e.target.checked ? li.classList.add("completed") : li.classList.remove("completed")
+  const toggleTodos = todos.map((todo) => {
+    if(uid === todo.uid ) {
+      todo.completed = !todo.completed;
+      li.querySelector("input[type=checkbox]").toggleAttribute("checked");
+    }
+    return todo;
+  })
+  todos = [...toggleTodos];
+  localStorage.setItem("todos", JSON.stringify(todos));
+  refreshApp()
 }
 
 /*================
     Delete a todo 
 ==================*/
 const deleteTodo = (uid) => {
-  console.log(uid)
+
   const filteredTodos = todos.filter((todo) => {
-    console.log(todo)
+
     return todo.uid !== uid;
   })
   todos = [...filteredTodos]
@@ -179,13 +190,13 @@ const editMode = (uid, mode, element) => {
         return todo.id = text[1]
       }
       return
-    })
-    console.log('todos', todos)
+    }) 
+    
 
   }else if( mode === 'desc'){
     // edit the description
-    console.log('desc mode yeah', uid, 'elementContent', element.textContent)
-    todos.map((todo) => {
+
+        todos.map((todo) => {
       if(todo.uid === uid) {
         return todo.description = element.textContent;
       }
@@ -199,11 +210,38 @@ const editMode = (uid, mode, element) => {
 /*===============================
   When order of todos is changed 
 =================================*/
-const setNewOrder = () => {
+const setNewOrder = (uid) => {
+  uid = Number(uid)
   // Go through the DOM and reconstruct the todos array pulling the information out of each node,  then compare with the current nodes array. If different send to localstorage and refresh the app.
-  const todos = [...document.querySelectorAll(".item")];
-  console.log(todos)
-  console.log(todos[0].children[0].innerText)
-  console.log(todos[0].children[1].innerText) // WORK IN PROGRESS!!!! //
+  const reorderedElements = [...document.querySelectorAll(".item")];
+  const reorderedTodoIds = reorderedElements.map((todo) => {
+    return Number(todo.dataset.uid)
+  })  
+  // console.log('New Order', reorderedTodoIds)
+  // Find the element that moved and where it moved to.. 
+  // the element that moved is passed in to the function (uid)
+  // where it moved to can be found by checking the reordered array with indexOf
+  const movedTo = reorderedTodoIds.indexOf(uid);
+  
+  // Find where the element moved from by checking where the element is in the original todos array
+
+  // Element
+  const targetTodo = todos.find(todo =>  todo.uid === uid)
+
+  // Index
+  const movedFrom = todos.findIndex((todo) => uid === todo.uid)
+  
+  // splice out the old position
+  todos.splice(movedFrom, 1)
+  // Splice in at the new position
+  todos.splice(movedTo, 0, targetTodo)
+  localStorage.setItem('todos', JSON.stringify(todos));
+  refreshApp();
+   
+
+
+
 }
 
+
+console.log('todos ', todos)
